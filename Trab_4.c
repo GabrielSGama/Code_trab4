@@ -142,8 +142,8 @@ void init_baralho_txt(struct carta *p)
         else if(p[i].val_c >= 'A' && p[i].val_c <= 'D') p[i].val_n = p[i].val_c - 'A' + 10;
         else if(p[i].val_c == '*') p[i].val_n = 20;
         getc(fp);
-        printf("Valor %c Naipe: %c Valor real: %d   ", p[i].val_c, p[i].cor, p[i].val_n);
-        printf("Valor de i: %d\n", i);
+        //printf("Valor %c Naipe: %c Valor real: %d   ", p[i].val_c, p[i].cor, p[i].val_n);
+        //printf("Valor de i: %d\n", i);
         i++;
     }
     i-=1;
@@ -153,9 +153,6 @@ void init_baralho_txt(struct carta *p)
         exit(1);
     }
     fclose(fp);
-    for(i=0; i<106; i++){
-        printf("Valor: %c naipe: %c\n", p[i].val_c, p[i].cor);
-    }
 }
 
 int jog()
@@ -176,13 +173,15 @@ void val_hand(struct carta **player, struct carta *p, int n_jog, int *quant_mao)
     int i;
     int k;
     int j = 0;
-    for(i=0; i<n_jog; i++){
-    quant_mao[i] = 14;
-        for(k=0; k<14; k++,j++){
-            player[i][k] = p[j];
+    for(i=0; i<n_jog; i++) quant_mao[i] = 14;
+
+    for(i=0; i<14; i++){
+        for(k=0; k<n_jog; k++,j++){
+            player[k][i] = p[j];
         }
     }
 }
+
 
 struct carta* update_baralho(struct carta *p, int quant, int n_antigo)
 {
@@ -249,8 +248,8 @@ void show_hand(struct carta **player, int i, int limit)
 {
     int k;
     for(k=0; k<limit; k++){
-        printf("%c%c ", player[i][k].val_c, player[i][k].cor);
         if(!(k%10) && k>0) printf("\n");
+        printf("%c%c ", player[i][k].val_c, player[i][k].cor);
     }
     printf("\n\n");
 }
@@ -259,8 +258,8 @@ void show_hand_copy(struct carta *player_copy, int limit)
 {
     int k;
     for(k=0; k<limit; k++){
-        printf("%c%c ", player_copy[k].val_c, player_copy[k].cor);
         if(!(k%10) && k>0) printf("\n");
+        printf("%c%c ", player_copy[k].val_c, player_copy[k].cor);
     }
     printf("\n\n");
 }
@@ -282,15 +281,15 @@ void show_mesa(struct carta **grupo, int n_grupo, int *limit)
     int k;
 
     for(i=0; i<n_grupo; i++){
-        if(i>0) printf("\n\n");
-        printf("Grupo %d                                          ", i+1);
+        if(i>0) printf("\n");
+        printf("Grupo %d: ", i+1);
         for(k=0; k<limit[i]; k++){
-            if(!k%13) printf("\n");
             printf("%c%c ", grupo[i][k].val_c, grupo[i][k].cor);
         }
     }
 }
-//int *quant_grupo & quant_grupo_copy
+
+
 void show_info(struct carta **grupo, int n_grupo, int n_baralho, struct carta **player, int i, struct carta *player_copy,int *quant_grupo, int quant_mao, int decision)
 {
     printf("Turno do jogador: %d\n\n", i+1);
@@ -350,6 +349,7 @@ void buble_sort_carta(struct carta *vector, int limit, int grupo_hand)
             flag--;
         }
     }
+    if(grupo_hand){
     if(vector[limit-1].val_n == 20 && vector[limit-2].val_n == 13){
         *aux = vector[limit - 1];
         vector[limit - 1] = vector[limit-2];
@@ -357,6 +357,7 @@ void buble_sort_carta(struct carta *vector, int limit, int grupo_hand)
             vector[i] = vector[i-1];
         }
         vector[0] = *aux;
+    }
     }
     free(aux);
 }
@@ -598,13 +599,25 @@ int main(int argc, char const *argv[])
     struct carta **grupo_copy;
     
     
+        printf("\n__________");                                                                                    
+    printf("\n|||_____\\\\\\");                                                                                   
+    printf("\n|||      \\\\\\                                                                                 ");
+    printf("\n|||       |||                                                     |||                         ||| ");
+    printf("\n|||       |||                   _    _         _    _                                    _____||| ");
+    printf("\n|||______///   |||    |||   || //_\\\\  //_\\\\    || //_\\\\  //_\\\\    |||  |||  //   |||    |||   ||//___\\\\");
+    printf("\n|||____////    |||    |||   ||//   \\\\//   \\\\   ||//   \\\\//   \\\\   |||  ||| //    |||    |||   ||/     \\\\");
+    printf("\n|||    \\\\\\     |||    |||   |||     ||    |||  |||     ||    |||  |||  |||\\\\\\    |||    |||   ||       ||");
+    printf("\n|||     \\\\\\    ||\\___/|||   |||     ||    |||  |||     ||    |||  |||  ||| \\\\\\   ||\\___/|||   ||\\_____//");
+    printf("\n|||      \\\\\\    \\\\___// \\\\  |||     ||    |||  |||     ||    |||  |||  |||  \\\\\\   \\\\___// \\\\  ||\\\\___//\n\n\n\n\n\n\n");
+    printf("Eh recomendado jogar em tela cheia\n\n");
+    printf("Pressione qualquer tecla para comecar o jogo...\n");
+    getc(stdin);
     p = (struct carta *)calloc(106,sizeof(struct carta));
     if(!p){
         printf("Nao foi possivel alocar memoria suficiente\n");
         printf("Encerrando o programa...\n");
         return 1;
     }
-    clear_screen();
     do{
         x = choose_baralho();
         if(x == 'A' || x == 'a'){
@@ -699,7 +712,6 @@ int main(int argc, char const *argv[])
                     printf("Crie pelo menos dois grupos\n\n");
                 }
             }else if(x == 'D' || x == 'd'){
-                clear_screen();
                 if(n_grupo_copy > 0){
                     select_grupo = ask_thing(n_grupo_copy, "Digite qual grupo sera dividido (1\0");
                     if(quant_grupo_copy[select_grupo] >= 2){
@@ -711,11 +723,15 @@ int main(int argc, char const *argv[])
                             grupo_copy[n_grupo_copy-1] = update_grupo_hand(grupo_copy[n_grupo_copy-1], n_grupo_copy-1, grupo_copy[select_grupo], select_card, quant_grupo_copy, 1);
                             grupo_copy[select_grupo] = update_grupo_hand(grupo_copy[select_grupo], select_grupo, NULL, select_card, quant_grupo_copy, -1);
                         }
+                        clear_screen();
                     }else{
                         clear_screen();
                         printf("Escolha um grupo com 2 cartas ou mais\n\n");
                     }
-                }else printf("Crie um grupo primeiro\n");
+                }else{
+                    clear_screen();
+                    printf("Crie um grupo primeiro\n\n");
+                }
             }else if(x == 'E' || x == 'e'){
                 clear_screen();
                 flag1 = 1;
