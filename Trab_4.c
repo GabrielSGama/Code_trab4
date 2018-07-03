@@ -534,28 +534,35 @@ int check_win(struct carta *grupo, int quant_grupo)
     int seq_win = 1;
     int grup_win = 1;
     int start;
+    int coringa;
+    int errado;
     char naipe;
 
     naipe = grupo[0].cor;
-    start = grupo[0].val_n;
+    if(grupo[0].val_n != 20) start = grupo[0].val_n;
+    else if(grupo[1].val_n != 20) start = grupo[1].val_n;
+    else start = grupo[2].val_n;
+    coringa = 0;
+    errado = 0;
+    for(i=0; i<quant_grupo; i++) if(grupo[i].val_n == 20) coringa++;
     for(i=0; i<quant_grupo; i++){
-        if(!(start+i == grupo[i].val_n || grupo[i].val_n == 20)){
-            seq_win = 0;
-            break;
-        }else if(naipe != grupo[i].cor && grupo[i].val_n != 20){
-            seq_win = 0;
-            break;
+        if(!(start+i == grupo[i].val_n || grupo[i].val_n == 20) || (naipe != grupo[i].cor && grupo[i].val_n != 20)){
+            errado++;
         }
     }
+    if(errado > coringa) seq_win = 0;
+    errado = 0;
+    coringa = 0;
     if(!seq_win){
+        for(i=0;i<quant_grupo; i++) if(grupo[i].val_n == 20) coringa++;
         if(quant_grupo <= 4){
             start = grupo[0].val_n;
             for(i=0; i<quant_grupo; i++){
-                if(start != grupo[i].val_n && grupo[i].val_n != 20){
-                    grup_win = 0;
-                    break;
+                if((start != grupo[i].val_n && grupo[i].val_n != 20)){
+                    errado++;
                 }
             }
+            if(errado > coringa) grup_win = 0;
             if(grup_win){
                 for(i=0; i<quant_grupo; i++){
                     for(k=i+1; k<quant_grupo; k++){
