@@ -349,16 +349,6 @@ void buble_sort_carta(struct carta *vector, int limit, int grupo_hand)
             flag--;
         }
     }
-    if(grupo_hand){
-    if(vector[limit-1].val_n == 20 && vector[limit-2].val_n == 13){
-        *aux = vector[limit - 1];
-        vector[limit - 1] = vector[limit-2];
-        for(i=limit-2; i>0; i--){
-            vector[i] = vector[i-1];
-        }
-        vector[0] = *aux;
-    }
-    }
     free(aux);
 }
 
@@ -534,44 +524,28 @@ int check_win(struct carta *grupo, int quant_grupo)
     int seq_win = 1;
     int grup_win = 1;
     int start;
-    int coringa;
-    int errado;
     char naipe;
 
-    
-    if(grupo[0].val_n != 20){
-        start = grupo[0].val_n;
-        naipe = grupo[0].cor;
-    }
-    else if(grupo[1].val_n != 20){
-        start = grupo[1].val_n;
-        naipe = grupo[1].cor;
-    }
-    else{
-        start = grupo[2].val_n;
-        naipe = grupo[2].cor;
-    }
-    coringa = 0;
-    errado = 0;
-    for(i=0; i<quant_grupo; i++) if(grupo[i].val_n == 20) coringa++;
+    naipe = grupo[0].cor;
+    start = grupo[0].val_n;
     for(i=0; i<quant_grupo; i++){
-        if(!(start+i == grupo[i].val_n || grupo[i].val_n == 20) || (naipe != grupo[i].cor && grupo[i].val_n != 20)){
-            errado++;
+        if(!(start+i == grupo[i].val_n || grupo[i].val_n == 20)){
+            seq_win = 0;
+            break;
+        }else if(naipe != grupo[i].cor && grupo[i].val_n != 20){
+            seq_win = 0;
+            break;
         }
     }
-    if(errado > coringa) seq_win = 0;
-    errado = 0;
-    coringa = 0;
     if(!seq_win){
-        for(i=0;i<quant_grupo; i++) if(grupo[i].val_n == 20) coringa++;
         if(quant_grupo <= 4){
             start = grupo[0].val_n;
             for(i=0; i<quant_grupo; i++){
-                if((start != grupo[i].val_n && grupo[i].val_n != 20)){
-                    errado++;
+                if(start != grupo[i].val_n && grupo[i].val_n != 20){
+                    grup_win = 0;
+                    break;
                 }
             }
-            if(errado > coringa) grup_win = 0;
             if(grup_win){
                 for(i=0; i<quant_grupo; i++){
                     for(k=i+1; k<quant_grupo; k++){
