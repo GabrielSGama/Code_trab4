@@ -538,10 +538,19 @@ int check_win(struct carta *grupo, int quant_grupo)
     int errado;
     char naipe;
 
-    naipe = grupo[0].cor;
-    if(grupo[0].val_n != 20) start = grupo[0].val_n;
-    else if(grupo[1].val_n != 20) start = grupo[1].val_n;
-    else start = grupo[2].val_n;
+    
+    if(grupo[0].val_n != 20){
+        start = grupo[0].val_n;
+        naipe = grupo[0].cor;
+    }
+    else if(grupo[1].val_n != 20){
+        start = grupo[1].val_n;
+        naipe = grupo[1].cor;
+    }
+    else{
+        start = grupo[2].val_n;
+        naipe = grupo[2].cor;
+    }
     coringa = 0;
     errado = 0;
     for(i=0; i<quant_grupo; i++) if(grupo[i].val_n == 20) coringa++;
